@@ -12,11 +12,27 @@ import CoreData
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-    var window: UIWindow?
+    /// Custom Base UIWindow.
+    var keyWindow : BaseWindow?
+    
+    /// Custom Base UIWindow.
+    var window: UIWindow? {
+        get {
+            keyWindow = keyWindow ?? BaseWindow(frame: UIScreen.main.bounds)
+            return keyWindow
+        }
+        set {}
+    }
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        
+        
         // Override point for customization after application launch.
+        let contactListViewController = ContactListRouter.createContactListModule()
+        
+        window?.rootViewController = contactListViewController
+        window?.makeKeyAndVisible()
         return true
     }
 
@@ -90,4 +106,3 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
 }
-
