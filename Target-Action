@@ -1,0 +1,32 @@
+class EventGenerator {
+  private var action : ((EventGenerator) -> Void)?
+  func add<T>(target : T, action : @escaping (T) -> (EventGenerator) -> Void) where T : AnyObject {
+    let closure : (EventGenerator) -> Void = { [weak target] (instance:EventGenerator) -> Void in
+      guard let target = target else {
+        return
+      }
+      action(target)(instance)
+    }
+    self.action = closure
+    /**************************/
+    /*
+     Just for sake of explanation, here we are generating the calling the action over the target, generally it happens over the event like touchupinside for UIButton
+     */
+    DispatchQueue.global().asyncAfter(deadline: DispatchTime.now() + 5) {
+      self.action?(self)
+    }
+    /**************************/
+  }
+}
+class EventListner {
+  let eventObject = EventGenerator()
+  init() {
+    eventObject.add(target: self, action: EventListner.action)
+  }
+  func action(eventObject: EventGenerator) -> Void {
+    // This action gets triggered
+    print("This action gets triggered")
+  }
+}
+
+let listner = EventListner()
